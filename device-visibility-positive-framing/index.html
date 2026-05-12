@@ -1553,13 +1553,15 @@ calcite-list-item[selected] > calcite-dropdown {
       const tabletIcon = applicationOutlineItem.querySelector(".outline-device-icon-tablet");
       const mobileIcon = applicationOutlineItem.querySelector(".outline-device-icon-mobile");
       const iconContainer = applicationOutlineItem.querySelector(".outline-device-indicators");
+      const enabledCount = [desktopEnabled, tabletEnabled, mobileEnabled].filter(Boolean).length;
 
       if (desktopIcon) desktopIcon.hidden = !desktopEnabled;
       if (tabletIcon) tabletIcon.hidden = !tabletEnabled;
       if (mobileIcon) mobileIcon.hidden = !mobileEnabled;
 
       if (iconContainer) {
-        iconContainer.hidden = !desktopEnabled && !tabletEnabled && !mobileEnabled;
+        // Show outline device icons only when visibility is partially restricted.
+        iconContainer.hidden = enabledCount === 0 || enabledCount === 3;
       }
     }
 
