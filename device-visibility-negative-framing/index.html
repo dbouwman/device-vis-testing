@@ -467,10 +467,6 @@ calcite-list-item[selected] > calcite-dropdown {
         display: flex;
       }
 
-      #viewport-dropdown {
-        display: block;
-      }
-
       .md-hidden {
         display: none;
       }
@@ -511,15 +507,6 @@ calcite-list-item[selected] > calcite-dropdown {
       <div slot="content-end" class="header-actions">
         <calcite-button class="sm-hidden" id="AI-layout-assistant-entry" icon-start="effects" round kind="neutral"
           appearance="outline"></calcite-button>
-        <calcite-dropdown width="m" placement="bottom" offset-distance="12" id="viewport-dropdown" class="sm-hidden">
-          <calcite-button slot="trigger" appearance="outline" kind="neutral" icon-start="monitor"
-            icon-end="chevron-down" id="viewport-trigger">Desktop</calcite-button>
-          <calcite-dropdown-group group-title="Select device" selection-mode="none">
-            <calcite-dropdown-item id="viewport-action-desktop" icon-start="monitor">Desktop</calcite-dropdown-item>
-            <calcite-dropdown-item id="viewport-action-tablet" icon-start="tablet">Tablet</calcite-dropdown-item>
-            <calcite-dropdown-item id="viewport-action-mobile" icon-start="mobile">Mobile</calcite-dropdown-item>
-          </calcite-dropdown-group>
-        </calcite-dropdown>
         <div class="header-actions-group sm-hidden">
           <calcite-button icon-start="undo" round kind="neutral" appearance="solid" label="undo"></calcite-button>
           <calcite-button icon-start="redo" round kind="neutral" appearance="solid" disabled
@@ -1732,63 +1719,6 @@ calcite-list-item[selected] > calcite-dropdown {
       }
     });
   })();
-
-  // === Viewport Dropdown Handler ===
-  customElements.whenDefined("calcite-dropdown").then(() => {
-    const viewportDropdown = document.querySelector("#viewport-dropdown");
-    const viewportTrigger = document.querySelector("#viewport-trigger");
-    const insetShell = document.querySelector("#inset-shell");
-
-    if (!viewportDropdown || !viewportTrigger || !insetShell) return;
-
-    // Viewport items configuration
-    const viewportItems = [
-      {
-        id: "viewport-action-desktop",
-        label: "Desktop",
-        icon: "monitor",
-        className: null // No class for desktop (default)
-      },
-      {
-        id: "viewport-action-tablet",
-        label: "Tablet",
-        icon: "tablet",
-        className: "inset-shell--tablet"
-      },
-      {
-        id: "viewport-action-mobile",
-        label: "Mobile",
-        icon: "mobile",
-        className: "inset-shell--mobile"
-      }
-    ];
-
-    // Function to update viewport
-    function setViewport(viewportItem) {
-      // Update trigger button text and icon
-      viewportTrigger.textContent = viewportItem.label;
-      viewportTrigger.setAttribute("icon-start", viewportItem.icon);
-
-      // Update inset-shell classes
-      insetShell.classList.remove("inset-shell--tablet", "inset-shell--mobile");
-      if (viewportItem.className) {
-        insetShell.classList.add(viewportItem.className);
-      }
-
-      // Close the dropdown after selection
-      viewportDropdown.open = false;
-    }
-
-    // Add click handlers to viewport items
-    viewportItems.forEach((viewportItem) => {
-      const element = document.getElementById(viewportItem.id);
-      if (element) {
-        element.addEventListener("click", () => {
-          setViewport(viewportItem);
-        });
-      }
-    });
-  });
 
   // Handles opening Sheet directly from the navigation action trigger
   const mobileMenuTrigger = document.getElementById("mobile-menu-trigger");
