@@ -1199,10 +1199,19 @@ calcite-list-item[selected] > calcite-dropdown {
       });
     }
 
-    function collapseAllOutlineItems() {
+    function applyDefaultOutlineExpansionState() {
       const allOutlineItems = layoutPanel.querySelectorAll("calcite-list-item");
       allOutlineItems.forEach((item) => {
-        item.removeAttribute("expanded");
+        const hasChildList = Array.from(item.children).some((child) => child.tagName === "CALCITE-LIST");
+        const label = (item.getAttribute("label") || "").trim().toLowerCase();
+        const shouldStayCollapsed = label === "card" || label === "content";
+
+        if (!hasChildList || item.classList.contains("list-action") || shouldStayCollapsed) {
+          item.removeAttribute("expanded");
+          return;
+        }
+
+        item.setAttribute("expanded", "");
       });
     }
 
@@ -1858,7 +1867,7 @@ calcite-list-item[selected] > calcite-dropdown {
 
     // Initialize on load
     customElements.whenDefined("calcite-flow").then(() => {
-      collapseAllOutlineItems();
+      applyDefaultOutlineExpansionState();
       setupBodyListItemActions();
       setupApplicationVisibilitySync();
 
