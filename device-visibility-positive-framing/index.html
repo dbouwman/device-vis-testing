@@ -21,8 +21,11 @@
   <style>
     /* Global overrides */
     calcite-shell-panel[slot="panel-start"],
+    calcite-shell-panel[slot="panel-start"] calcite-flow {
+      --calcite-shell-panel-width: 320px;
+    }
+
     calcite-shell-panel[slot="panel-end"],
-    calcite-shell-panel[slot="panel-start"] calcite-flow,
     calcite-shell-panel[slot="panel-end"] calcite-flow {
       --calcite-shell-panel-width: 280px;
     }
@@ -199,6 +202,34 @@ calcite-list-item[selected] > calcite-dropdown {
       margin-left: 3rem;
     }
 
+    .next-task-overlay[hidden] {
+      display: none;
+    }
+
+    .next-task-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .next-task-overlay-card {
+      background: var(--calcite-color-foreground-1);
+      border-radius: var(--calcite-corner-radius-round);
+      box-shadow: var(--calcite-shadow-lg);
+      padding: 1rem;
+      width: min(28rem, calc(100vw - 2rem));
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .next-task-overlay-message {
+      margin: 0;
+      font-size: var(--calcite-font-size-0);
+    }
+
     /* Layout preview */
     .layout {
       /* margin-top: 0.5rem; */
@@ -240,7 +271,9 @@ calcite-list-item[selected] > calcite-dropdown {
     }
 
     .block-text {
+      flex: 0 0 100%;
       max-width: 360rem;
+      width: 100%;
     }
 
     .block-empty {
@@ -259,8 +292,39 @@ calcite-list-item[selected] > calcite-dropdown {
     }
 
     .preview-cards-row {
+      flex: 0 0 280px;
+      width: 280px;
+    }
+
+    .preview-outline-root {
+      width: 100%;
+    }
+
+    .preview-section-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .preview-section-container > [data-preview-id] {
+      flex: 0 0 280px;
+      width: 280px;
+    }
+
+    .preview-section-container > [data-preview-id="text-block"] {
       flex: 0 0 100%;
       width: 100%;
+    }
+
+    .preview-section-container > [data-preview-id="tabs-block"] {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    .preview-tabs {
+      --calcite-tab-title-text-color-active: var(--calcite-color-brand);
+      border-bottom: 1px solid var(--calcite-color-border-3);
     }
 
     /* Layout config panel */
@@ -548,76 +612,107 @@ calcite-list-item[selected] > calcite-dropdown {
             <calcite-list drag-enabled display-mode="nested" selection-mode="none" filter-enabled>
               <calcite-action slot="filter-actions-end" icon="ellipsis" text="More actions"></calcite-action>
               <!-- <calcite-list-item drag-disabled label="Site header"></calcite-list-item> -->
+              <calcite-list-item drag-disabled label="Add section" icon-start="plus-circle"
+                class="list-action"></calcite-list-item>
               <calcite-list-item label="Section" icon-start="layout-horizontal" expanded>
                   <calcite-list drag-enabled selection-mode="none">
                     <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle" 
                       class="list-action"></calcite-list-item>
-                    <calcite-list-item id="start-with-me" label="Text" icon-start="text"></calcite-list-item>
-                    <calcite-list-item id="application-outline-item" label="Application" icon-start="apps">
-                      <span slot="content-end" class="outline-device-indicators" aria-label="Visible on selected devices">
-                        <calcite-icon class="outline-device-icon outline-device-icon-desktop" icon="monitor" scale="s"></calcite-icon>
-                        <calcite-icon class="outline-device-icon outline-device-icon-tablet" icon="tablet" scale="s"></calcite-icon>
-                        <calcite-icon class="outline-device-icon outline-device-icon-mobile" icon="mobile" scale="s"></calcite-icon>
-                      </span>
-                    </calcite-list-item>
-                    <calcite-list-item label="Card" icon-start="list-rectangle">
-                      <calcite-list selection-mode="none">
-                        <calcite-list-item label="Image" icon-start="image"></calcite-list-item>
-                        <calcite-list-item label="Header" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-                            <calcite-list-item label="Title" icon-start="text"></calcite-list-item>
-                          </calcite-list>
-                        </calcite-list-item>
-                        <calcite-list-item label="Body" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-
-                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                    <calcite-list-item label="Container" icon-start="folder" expanded>
+                      <calcite-list drag-enabled selection-mode="none">
+                        <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                          class="list-action"></calcite-list-item>
+                        <calcite-list-item id="start-with-me" label="Text" icon-start="text" data-preview-id="text-block"></calcite-list-item>
+                        <calcite-list-item label="Tabs" icon-start="table" data-preview-id="tabs-block" expanded>
+                          <calcite-list drag-enabled selection-mode="none">
+                            <calcite-list-item drag-disabled label="Add tab" icon-start="plus-circle"
                               class="list-action"></calcite-list-item>
-                          </calcite-list>
+                            <calcite-list-item label="Data" icon-start="table" expanded>
+                              <calcite-list drag-enabled selection-mode="none">
+                                <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                  class="list-action"></calcite-list-item>
+                                <calcite-list-item label="Container" icon-start="folder" expanded>
+                                  <calcite-list drag-enabled selection-mode="none">
+                                    <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                      class="list-action"></calcite-list-item>
+                                    <calcite-list-item id="application-outline-item" label="Application" icon-start="apps" data-preview-id="application-block">
+                                      <span slot="content-end" class="outline-device-indicators" aria-label="Visible on selected devices">
+                                        <calcite-icon class="outline-device-icon outline-device-icon-desktop" icon="monitor" scale="s"></calcite-icon>
+                                        <calcite-icon class="outline-device-icon outline-device-icon-tablet" icon="tablet" scale="s"></calcite-icon>
+                                        <calcite-icon class="outline-device-icon outline-device-icon-mobile" icon="mobile" scale="s"></calcite-icon>
+                                      </span>
+                                    </calcite-list-item>
+                                    <calcite-list-item label="Card" icon-start="list-rectangle" data-preview-id="card-1">
+                                      <calcite-list selection-mode="none">
+                                        <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                          class="list-action"></calcite-list-item>
+                                        <calcite-list-item label="Image" icon-start="image"></calcite-list-item>
+                                        <calcite-list-item label="Header" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+                                            <calcite-list-item label="Title" icon-start="text"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                        <calcite-list-item label="Body" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+
+                                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                              class="list-action"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                        <calcite-list-item label="Footer" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+                                            <calcite-list-item label="" value="" class="outline-add-action">
+                            <calcite-action class="list-action" text-enabled slot="actions-start" icon="plus-circle" text="Add block"></calcite-action>
                         </calcite-list-item>
-                        <calcite-list-item label="Footer" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-                            <calcite-list-item label="Button" icon-start="button"></calcite-list-item>
-                            <calcite-list-item label="" value="" class="outline-add-action">
-            <calcite-action class="list-action" text-enabled slot="actions-start" icon="plus-circle" text="Add block"></calcite-action>
-        </calcite-list-item>
+                                            <calcite-list-item label="Button" icon-start="button"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                      </calcite-list>
+
+                                    </calcite-list-item>
+                                    <calcite-list-item label="Card" icon-start="list-rectangle" data-preview-id="card-2">
+                                      <calcite-list selection-mode="none">
+                                        <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                          class="list-action"></calcite-list-item>
+                                        <calcite-list-item label="Image" icon-start="image"></calcite-list-item>
+                                        <calcite-list-item label="Header" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+                                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                              class="list-action"></calcite-list-item>
+                                            <calcite-list-item label="Title" icon-start="text"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                        <calcite-list-item label="Body" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+                                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                              class="list-action"></calcite-list-item>
+                                            <calcite-list-item label="Metric" icon-start="gauge-summary"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                        <calcite-list-item label="Footer" icon-start="sub-fields">
+                                          <calcite-list selection-mode="none">
+                                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
+                                              class="list-action"></calcite-list-item>
+                                            <calcite-list-item label="Button" icon-start="button"></calcite-list-item>
+                                          </calcite-list>
+                                        </calcite-list-item>
+                                      </calcite-list>
+
+                                    </calcite-list-item>
+                                  </calcite-list>
+                                </calcite-list-item>
+                              </calcite-list>
+                            </calcite-list-item>
+                            <calcite-list-item label="Content" icon-start="table" expanded>
+                              <calcite-list drag-enabled selection-mode="none"></calcite-list>
+                            </calcite-list-item>
                           </calcite-list>
                         </calcite-list-item>
                       </calcite-list>
-
-                    </calcite-list-item>
-                    <calcite-list-item label="Card" icon-start="list-rectangle">
-                      <calcite-list selection-mode="none">
-                        <calcite-list-item label="Image" icon-start="image"></calcite-list-item>
-                        <calcite-list-item label="Header" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-                            <calcite-list-item label="Title" icon-start="text"></calcite-list-item>
-                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
-                              class="list-action"></calcite-list-item>
-                          </calcite-list>
-                        </calcite-list-item>
-                        <calcite-list-item label="Body" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-                            <calcite-list-item label="Metric" icon-start="gauge-summary"></calcite-list-item>
-                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
-                              class="list-action"></calcite-list-item>
-                          </calcite-list>
-                        </calcite-list-item>
-                        <calcite-list-item label="Footer" icon-start="sub-fields">
-                          <calcite-list selection-mode="none">
-                            <calcite-list-item label="Button" icon-start="button"></calcite-list-item>
-                            <calcite-list-item drag-disabled label="Add block" icon-start="plus-circle"
-                              class="list-action"></calcite-list-item>
-                          </calcite-list>
-                        </calcite-list-item>
-                      </calcite-list>
-
                     </calcite-list-item>
 
                   </calcite-list>
               </calcite-list-item>
-              <calcite-list-item drag-disabled label="Add section" icon-start="plus-circle"
-                class="list-action"></calcite-list-item>
             </calcite-list>
           </calcite-flow-item>
         </calcite-flow>
@@ -683,8 +778,9 @@ calcite-list-item[selected] > calcite-dropdown {
             </calcite-navigation>
           </div>
         </div>
-        <div class="section-h padding-1rem">
-          <div class="block-text" id="selectable-block">
+        <div class="section-h padding-1rem preview-outline-root">
+          <div class="preview-section-container" data-preview-id="section-container">
+          <div class="block-text" id="selectable-block" data-preview-id="text-block">
             <div class="selected-border"></div>
             <div class="block-controls">
               <calcite-action-bar layout="horizontal" expand-disabled floating overflow-actions-disabled
@@ -710,7 +806,15 @@ calcite-list-item[selected] > calcite-dropdown {
               or concerned citizen, our goal is to foster collaboration and innovation in wildfire prevention—because
               only you can help prevent wildfires.</p>
           </div>
-          <calcite-card>
+          <calcite-tabs class="preview-tabs" data-preview-id="tabs-block">
+            <calcite-tab-nav slot="title-group">
+              <calcite-tab-title selected>Data</calcite-tab-title>
+              <calcite-tab-title>Content</calcite-tab-title>
+            </calcite-tab-nav>
+            <calcite-tab selected></calcite-tab>
+            <calcite-tab></calcite-tab>
+          </calcite-tabs>
+          <calcite-card data-preview-id="application-block">
             <span slot="heading">Application</span>
             <div>
               Interactive wildfire prevention application placeholder.
@@ -718,8 +822,7 @@ calcite-list-item[selected] > calcite-dropdown {
             <calcite-button slot="footer-start" width="full">Launch application</calcite-button>
           </calcite-card>
           <!-- <arcgis-hub-gallery term="water" layout="grid" limit="9" link-target="siteRelative" base-url="/" show-thumbnail show-search show-link-button link-button-text="explore" show-sort show-chips show-facets show-more-results-btn show-results-count show-back-to-top-btn enable-telemetry show-layout-switcher enable-immersive-map-layout></arcgis-hub-gallery> -->
-          <calcite-card-group class="preview-cards-row">
-            <calcite-card>
+          <calcite-card class="preview-cards-row" data-preview-id="card-1">
               <img slot="thumbnail" src="https://placebear.com/240/180" />
               <span slot="heading">Card title goes here</span>
               <div class="block-empty">
@@ -727,7 +830,7 @@ calcite-list-item[selected] > calcite-dropdown {
               </div>
               <calcite-button slot="footer-start" width="full">Button</calcite-button>
             </calcite-card>
-            <calcite-card>
+            <calcite-card class="preview-cards-row" data-preview-id="card-2">
               <img slot="thumbnail" src="https://placebear.com/240/180" />
               <span slot="heading">Acres Cleared of Brush (2025)</span>
               <div class="metric">
@@ -737,11 +840,11 @@ calcite-list-item[selected] > calcite-dropdown {
               </div>
               <calcite-button slot="footer-start" width="full">Contribute</calcite-button>
             </calcite-card>
-          </calcite-card-group>
+            </div>
         </div>
       </div>
     </calcite-shell>
-    <calcite-shell-panel id="block-config-panel" slot="panel-end" position="end" display-mode="float-content">
+    <calcite-shell-panel id="block-config-panel" slot="panel-end" position="end" display-mode="float-content" hidden>
       <calcite-flow id="block-config-flow">
         <calcite-flow-item id="block-config-root-item" selected>
           <calcite-panel id="config-panel-baby" heading="Gallery" icon="four-by-three-grid">
@@ -897,6 +1000,14 @@ calcite-list-item[selected] > calcite-dropdown {
       </div>
     </calcite-panel>
   </calcite-popover>
+
+  <div id="image-selection-overlay" class="next-task-overlay" hidden>
+    <div class="next-task-overlay-card" role="dialog" aria-modal="true" aria-labelledby="image-selection-overlay-heading">
+      <h3 id="image-selection-overlay-heading">Notice</h3>
+      <p class="next-task-overlay-message">Please move on to the next task</p>
+      <calcite-button id="image-selection-overlay-close" width="full">OK</calcite-button>
+    </div>
+  </div>
 </body>
 <script type="module">
   customElements.whenDefined("calcite-action-bar").then(() => {
@@ -950,7 +1061,7 @@ calcite-list-item[selected] > calcite-dropdown {
       });
 
       const rightShellPanel = document.querySelector('calcite-shell-panel[slot="panel-end"]');
-      if (rightShellPanel) {
+      if (rightShellPanel && !rightShellPanel.hasAttribute("hidden")) {
         rightShellPanel.style.display = "";
       }
     }
@@ -1017,6 +1128,7 @@ calcite-list-item[selected] > calcite-dropdown {
     const blockConfigRootItem = document.querySelector("#block-config-root-item");
     const blockConfigAdvancedItem = document.querySelector("#block-config-advanced-item");
     const layoutPanel = document.querySelector("#panel-layout");
+    const previewOutlineRoot = document.querySelector(".preview-outline-root");
     const startWithMeItem = document.querySelector("#start-with-me");
     const addBlockPopover = document.querySelector("#add-block-popover");
 
@@ -1030,7 +1142,10 @@ calcite-list-item[selected] > calcite-dropdown {
       lastSelectedItem: null,
       activeRenameItem: null,
       addBlockAnchorIdCounter: 0,
-      smallScreenAdvancedFlowItem: null
+      smallScreenAdvancedFlowItem: null,
+      outlineOrderSyncQueued: false,
+      outlineOrderPollTimer: null,
+      lastOutlineOrderSignature: ""
     };
 
     // Move config panel into the flow only on tablet/mobile widths.
@@ -1080,6 +1195,109 @@ calcite-list-item[selected] > calcite-dropdown {
           listItem.insertBefore(existingActionsMenu, listItem.firstChild);
         }
       });
+    }
+
+    function collapseAllOutlineItems() {
+      const allOutlineItems = layoutPanel.querySelectorAll("calcite-list-item");
+      allOutlineItems.forEach((item) => {
+        item.removeAttribute("expanded");
+      });
+    }
+
+    function getPreviewId(listItem) {
+      return listItem?.getAttribute("data-preview-id") || null;
+    }
+
+    function getOutlineItemsInVisualOrder(list) {
+      const items = Array.from(list.querySelectorAll(':scope > calcite-list-item'))
+        .filter((listItem) => !listItem.classList.contains("list-action"));
+
+      const positionedItems = items.map((item, index) => ({
+        item,
+        index,
+        rect: item.getBoundingClientRect()
+      }));
+
+      positionedItems.sort((a, b) => {
+        const topDelta = a.rect.top - b.rect.top;
+        if (Math.abs(topDelta) > 2) return topDelta;
+
+        const leftDelta = a.rect.left - b.rect.left;
+        if (Math.abs(leftDelta) > 2) return leftDelta;
+
+        return a.index - b.index;
+      });
+
+      return positionedItems.map((entry) => entry.item);
+    }
+
+    function syncOutlineListToPreview(list) {
+      if (!list) return;
+
+      const orderedOutlineItems = getOutlineItemsInVisualOrder(list);
+
+      const orderedPreviewNodes = orderedOutlineItems
+        .map((listItem) => getPreviewId(listItem))
+        .filter(Boolean)
+        .map((previewId) => previewOutlineRoot?.querySelector(`[data-preview-id="${previewId}"]`))
+        .filter(Boolean);
+
+      if (orderedPreviewNodes.length < 2) return;
+
+      const sharedParent = orderedPreviewNodes[0].parentElement;
+      if (!sharedParent) return;
+
+      const allShareParent = orderedPreviewNodes.every((node) => node.parentElement === sharedParent);
+      if (!allShareParent) return;
+
+      orderedPreviewNodes.forEach((node) => {
+        sharedParent.appendChild(node);
+      });
+    }
+
+    function syncOutlineToPreviewOrder() {
+      const allOutlineLists = layoutPanel.querySelectorAll("calcite-list");
+      allOutlineLists.forEach((list) => {
+        syncOutlineListToPreview(list);
+      });
+    }
+
+    function queueOutlineToPreviewSync() {
+      if (state.outlineOrderSyncQueued) return;
+
+      state.outlineOrderSyncQueued = true;
+      requestAnimationFrame(() => {
+        state.outlineOrderSyncQueued = false;
+        syncOutlineToPreviewOrder();
+      });
+    }
+
+    function getPrimaryOutlineList() {
+      return layoutPanel.querySelector('calcite-list-item[label="Data"] > calcite-list[drag-enabled]');
+    }
+
+    function getOutlineOrderSignature() {
+      const primaryList = getPrimaryOutlineList();
+      if (!primaryList) return "";
+
+      return getOutlineItemsInVisualOrder(primaryList)
+        .map((item) => item.getAttribute("data-preview-id") || item.getAttribute("label") || "")
+        .join("|");
+    }
+
+    function startOutlineOrderPolling() {
+      if (state.outlineOrderPollTimer) {
+        clearInterval(state.outlineOrderPollTimer);
+      }
+
+      state.lastOutlineOrderSignature = getOutlineOrderSignature();
+      state.outlineOrderPollTimer = setInterval(() => {
+        const nextSignature = getOutlineOrderSignature();
+        if (!nextSignature || nextSignature === state.lastOutlineOrderSignature) return;
+
+        state.lastOutlineOrderSignature = nextSignature;
+        queueOutlineToPreviewSync();
+      }, 250);
     }
 
     function getSelectedBlockLabel() {
@@ -1181,6 +1399,7 @@ calcite-list-item[selected] > calcite-dropdown {
       duplicatedItem.removeAttribute("selected");
 
       listItem.insertAdjacentElement("afterend", duplicatedItem);
+      queueOutlineToPreviewSync();
     }
 
     function deleteListItem(listItem) {
@@ -1207,6 +1426,7 @@ calcite-list-item[selected] > calcite-dropdown {
       }
 
       listItem.remove();
+      queueOutlineToPreviewSync();
     }
 
     function startRenameMode(listItem) {
@@ -1438,8 +1658,10 @@ calcite-list-item[selected] > calcite-dropdown {
       }
       state.smallScreenAdvancedFlowItem = null;
 
-      // Show the right panel
-      blockConfigPanel.style.display = "";
+      // Show the right panel only when not intentionally hidden.
+      if (!blockConfigPanel.hasAttribute("hidden")) {
+        blockConfigPanel.style.display = "";
+      }
       blockConfigPanel.removeAttribute("collapsed");
 
       state.isSmallScreen = false;
@@ -1614,6 +1836,7 @@ calcite-list-item[selected] > calcite-dropdown {
 
     // Initialize on load
     customElements.whenDefined("calcite-flow").then(() => {
+      collapseAllOutlineItems();
       setupBodyListItemActions();
       setupApplicationVisibilitySync();
 
@@ -1679,10 +1902,25 @@ calcite-list-item[selected] > calcite-dropdown {
         handleListItemAction(actionItem);
       });
 
-      // Initialize with start-with-me item on load
-      if (startWithMeItem) {
-        handleListItemSelection(startWithMeItem);
-      }
+      layoutPanel.addEventListener("calciteListOrderChange", (e) => {
+        const changedList = e.target?.closest("calcite-list");
+
+        // Defer until after Calcite settles dropped item positions.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (changedList) {
+              syncOutlineListToPreview(changedList);
+            } else {
+              queueOutlineToPreviewSync();
+            }
+          });
+        });
+      });
+
+      // Passive fallback when reorder events are not emitted consistently.
+      startOutlineOrderPolling();
+
+      queueOutlineToPreviewSync();
     });
   })();
 
@@ -1724,6 +1962,63 @@ calcite-list-item[selected] > calcite-dropdown {
       });
     }
   }
+
+  const addBlockPopoverElement = document.getElementById("add-block-popover");
+  const addBlockImageItem = document.querySelector('#add-block-popover calcite-list-item[value="image-element"]');
+  const imageSelectionOverlay = document.getElementById("image-selection-overlay");
+  const imageSelectionOverlayClose = document.getElementById("image-selection-overlay-close");
+
+  function shouldShowImageOverlay(event) {
+    const detailItem = event?.detail?.item;
+    if (detailItem?.getAttribute?.("value") === "image-element") {
+      return true;
+    }
+
+    const targetItem = event?.target?.closest?.('calcite-list-item[value="image-element"]');
+    if (targetItem) {
+      return true;
+    }
+
+    if (typeof event?.composedPath === "function") {
+      return event.composedPath().some((node) => node?.getAttribute?.("value") === "image-element");
+    }
+
+    return false;
+  }
+
+  function showImageSelectionOverlay() {
+    if (!imageSelectionOverlay) return;
+    imageSelectionOverlay.hidden = false;
+  }
+
+  function openImageSelectionOverlay(event) {
+    if (!shouldShowImageOverlay(event)) return;
+    showImageSelectionOverlay();
+  }
+
+  addBlockImageItem?.addEventListener("click", showImageSelectionOverlay);
+  addBlockImageItem?.addEventListener("calciteListItemSelect", showImageSelectionOverlay);
+  addBlockImageItem?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      showImageSelectionOverlay();
+    }
+  });
+
+  addBlockPopoverElement?.addEventListener("calciteListItemSelect", openImageSelectionOverlay);
+  addBlockPopoverElement?.addEventListener("click", openImageSelectionOverlay);
+
+  document.addEventListener("calciteListItemSelect", openImageSelectionOverlay);
+  document.addEventListener("click", openImageSelectionOverlay);
+
+  imageSelectionOverlayClose?.addEventListener("click", () => {
+    imageSelectionOverlay.hidden = true;
+  });
+
+  imageSelectionOverlay?.addEventListener("click", (event) => {
+    if (event.target === imageSelectionOverlay) {
+      imageSelectionOverlay.hidden = true;
+    }
+  });
 
 </script>
 
