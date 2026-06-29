@@ -1334,7 +1334,7 @@ const FAKE_GEOCODE_STREETS = [
   "New Jersey Ave SE"
 ];
 const REPLY_AUTHORS = [
-  { author: "Jordan Park", initials: "JP" },
+  { author: "Frank Hawk", initials: "FH" },
   { author: "Taylor Nguyen", initials: "TN" },
   { author: "Casey Rivera", initials: "CR" },
   { author: "Jamie Flores", initials: "JF" },
@@ -1808,14 +1808,14 @@ const DISCUSSION_POSTS = [
     ]
   },
   {
-    author: "Elena Gomez",
+    author: "Sam Smith",
     initials: "EG",
     channel: "General",
     source: "Riverfront heat resilience discussion",
     age: "34m ago",
-    title: "Anacostia Riverfront scorecard - cooling gaps?",
+    title: "Detroit Riverfront Splashpad Ideas?",
     body: "The current summary is useful, but residents keep asking where the hottest gaps are between the park edge and the apartment frontages. A block-level callout would make this discussion much more actionable.",
-    // location: "Anacostia Riverfront corridor",
+    // location: "Detroit Riverfront corridor",
     //status: "Open",
     // visibility: "Private",
     replies: 29,
@@ -1864,8 +1864,8 @@ const DISCUSSION_POSTS = [
         status: ""
       },
       {
-        author: "Jordan Park",
-        initials: "JP",
+        author: "Frank Hawk",
+        initials: "FH",
         age: "3 min ago",
         body: "Agreed. We should make the next step clearer for people scanning the thread quickly.",
         reactions: [],
