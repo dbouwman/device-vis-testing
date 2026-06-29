@@ -1,4 +1,4 @@
-import { HUB_PROTOTYPE_RUNTIME_CONFIG as committedConfig } from "../prototype-runtime-config.js";
+import { HUB_PROTOTYPE_RUNTIME_CONFIG as committedConfig } from "./prototype-runtime-config.js";
 
 let resolvedConfigPromise;
 
