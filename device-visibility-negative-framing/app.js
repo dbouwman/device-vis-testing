@@ -1818,7 +1818,7 @@ const DISCUSSION_POSTS = [
     // location: "Anacostia Riverfront corridor",
     //status: "Open",
     // visibility: "Private",
-    replies: 29,
+    replies: 32,
     reactions: [
       { emoji: "👍", count: 5 },
       { emoji: "🎉", count: 3 }
