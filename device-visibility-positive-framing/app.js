@@ -1818,7 +1818,7 @@ const DISCUSSION_POSTS = [
     // location: "Detroit Riverfront corridor",
     //status: "Open",
     // visibility: "Private",
-    replies: 32,
+    replies: 29,
     reactions: [
       { emoji: "👍", count: 5 },
       { emoji: "🎉", count: 3 }
