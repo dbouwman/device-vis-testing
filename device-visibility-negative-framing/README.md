@@ -24,7 +24,7 @@ Document the product question or decision this prototype is intended to support.
 ## Prototype
 
 - Entry: [index.html](./index.html)
-- Folder: `replies-testing`
+- Folder: `device-visibility-negative-framing`
 - Owner: Unassigned
 - Status: Exploring
 
