@@ -1,17 +1,57 @@
-export const HUB_PROTOTYPE_RUNTIME_CONFIG = {
-  // Set by deploy workflow for hosted previews. Keep empty in source.
-  arcgisApiKey: "",
-  // Can be overridden per environment when needed.
-  arcgisPortalUrl: "https://www.arcgis.com",
-  // Safe default that does not require ArcGIS credentials.
-  arcgisBasemap: "osm",
-  // Avoid interactive sign-in prompts in prototypes.
-  disableIdentityPrompt: true,
-};
+import { HUB_PROTOTYPE_RUNTIME_CONFIG as committedConfig } from "../prototype-runtime-config.js";
 
-if (typeof window !== "undefined") {
-  window.__HUB_PROTOTYPE_RUNTIME_CONFIG = {
-    ...HUB_PROTOTYPE_RUNTIME_CONFIG,
-    ...(window.__HUB_PROTOTYPE_RUNTIME_CONFIG || {}),
-  };
+let resolvedConfigPromise;
+
+export async function getPrototypeRuntimeConfig() {
+  if (!resolvedConfigPromise) {
+    resolvedConfigPromise = (async () => {
+      let localConfig = {};
+      try {
+        const mod = await import("../prototype-runtime-config.local.js");
+        localConfig = mod.HUB_PROTOTYPE_RUNTIME_CONFIG || mod.default || {};
+      } catch {
+        localConfig = {};
+      }
+
+      const globalConfig =
+        typeof window !== "undefined" ? window.__HUB_PROTOTYPE_RUNTIME_CONFIG || {} : {};
+
+      const merged = {
+        ...committedConfig,
+        ...localConfig,
+        ...globalConfig,
+      };
+
+      if (typeof window !== "undefined") {
+        window.__HUB_PROTOTYPE_RUNTIME_CONFIG = merged;
+      }
+
+      return merged;
+    })();
+  }
+
+  return resolvedConfigPromise;
 }
+
+export async function applyArcGISRuntimeConfig() {
+  const cfg = await getPrototypeRuntimeConfig();
+
+  const [esriConfigModule] = await $arcgis.import(["@arcgis/core/config.js"]);
+  const esriConfig = esriConfigModule?.default ?? esriConfigModule;
+
+  if (cfg.arcgisPortalUrl) {
+    esriConfig.portalUrl = cfg.arcgisPortalUrl;
+  }
+
+  if (cfg.arcgisApiKey) {
+    esriConfig.apiKey = cfg.arcgisApiKey;
+  }
+
+  if (cfg.disableIdentityPrompt === true) {
+    esriConfig.request = esriConfig.request || {};
+    esriConfig.request.useIdentity = false;
+  }
+
+  return cfg;
+}
+
