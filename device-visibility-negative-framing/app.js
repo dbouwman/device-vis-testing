@@ -1908,14 +1908,14 @@ const DISCUSSION_POSTS = [
     reactions: [{ emoji: "👍", count: 5 }, { emoji: "🙂", count: 3 }]
   },
   {
-    author: "Jordan Park",
-    initials: "JP",
+    author: "Sandra Jeske",
+    initials: "SJ",
     channel: "General",
     source: "Community meeting follow-up",
     age: "1h ago",
-    title: "",
+    title: "Meet Our Community Heroes Planning",
     body: "Attendees were less interested in canopy percentage on its own and more interested in where they feel heat exposure daily. That suggests a heat-gap framing may be more legible than acreage totals.",
-    replies: 14,
+    replies: 16,
     reactions: [{ emoji: "🤔", count: 8 }, { emoji: "👍", count: 3 }]
   },
   {
