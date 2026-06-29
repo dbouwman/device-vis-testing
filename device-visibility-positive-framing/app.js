@@ -1813,7 +1813,7 @@ const DISCUSSION_POSTS = [
     channel: "General",
     source: "Riverfront heat resilience discussion",
     age: "34m ago",
-    title: "Detroit Riverfront Splashpad Ideas?",
+    title: "Detroit Riverfront Splash Pad Ideas?",
     body: "The current summary is useful, but residents keep asking where the hottest gaps are between the park edge and the apartment frontages. A block-level callout would make this discussion much more actionable.",
     // location: "Detroit Riverfront corridor",
     //status: "Open",
