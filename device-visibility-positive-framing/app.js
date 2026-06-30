@@ -1334,7 +1334,7 @@ const FAKE_GEOCODE_STREETS = [
   "New Jersey Ave SE"
 ];
 const REPLY_AUTHORS = [
-  { author: "Frank Hawk", initials: "FH" },
+  { author: "Jordan Park", initials: "JP" },
   { author: "Taylor Nguyen", initials: "TN" },
   { author: "Casey Rivera", initials: "CR" },
   { author: "Jamie Flores", initials: "JF" },
@@ -1808,14 +1808,14 @@ const DISCUSSION_POSTS = [
     ]
   },
   {
-    author: "Sam Smith",
+    author: "Elena Gomez",
     initials: "EG",
     channel: "General",
     source: "Riverfront heat resilience discussion",
     age: "34m ago",
-    title: "Detroit Riverfront Splash Pad Ideas?",
+    title: "Anacostia Riverfront scorecard - cooling gaps?",
     body: "The current summary is useful, but residents keep asking where the hottest gaps are between the park edge and the apartment frontages. A block-level callout would make this discussion much more actionable.",
-    // location: "Detroit Riverfront corridor",
+    // location: "Anacostia Riverfront corridor",
     //status: "Open",
     // visibility: "Private",
     replies: 29,
@@ -1864,8 +1864,8 @@ const DISCUSSION_POSTS = [
         status: ""
       },
       {
-        author: "Frank Hawk",
-        initials: "FH",
+        author: "Jordan Park",
+        initials: "JP",
         age: "3 min ago",
         body: "Agreed. We should make the next step clearer for people scanning the thread quickly.",
         reactions: [],
@@ -1913,7 +1913,7 @@ const DISCUSSION_POSTS = [
     channel: "General",
     source: "Community meeting follow-up",
     age: "1h ago",
-    title: "Dog Beach Cleanup",
+    title: "",
     body: "Attendees were less interested in canopy percentage on its own and more interested in where they feel heat exposure daily. That suggests a heat-gap framing may be more legible than acreage totals.",
     replies: 14,
     reactions: [{ emoji: "🤔", count: 8 }, { emoji: "👍", count: 3 }]
@@ -3885,6 +3885,7 @@ previewShell.addEventListener("click", (event) => {
 
   const replyAction = event.composedPath().find((node) => node?.dataset?.replyAction);
   if (replyAction?.dataset?.replyAction === "open-inline") {
+    queueResultsScrollRestore();
     state.replyPostIndex = Number(replyAction.dataset.replyPostIndex);
     state.replyDialogOpen = false;
     state.replyFocusPostIndex = state.replyPostIndex;
