@@ -1913,7 +1913,7 @@ const DISCUSSION_POSTS = [
     channel: "General",
     source: "Dog Beach Cleanup",
     age: "1h ago",
-    title: "",
+    title: "Dog Beach Cleanup",
     body: "Attendees were less interested in canopy percentage on its own and more interested in where they feel heat exposure daily. That suggests a heat-gap framing may be more legible than acreage totals.",
     replies: 14,
     reactions: [{ emoji: "🤔", count: 8 }, { emoji: "👍", count: 3 }]
